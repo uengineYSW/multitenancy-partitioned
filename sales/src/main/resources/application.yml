@@ -1,0 +1,92 @@
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:9090/realms/master/protocol/openid-connect/certs'
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: 'localhost:9092'
+        streams:
+          binder:
+            configuration:
+              default:
+                key:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                value:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      bindings:
+        event-in:
+          group: sales
+          destination: wizmokeycloak
+          contentType: application/json
+        event-out:
+          destination: wizmokeycloak
+          contentType: application/json
+  jpa:
+    generate-ddl: true
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        ddl-auto: create-drop
+        show_sql: true
+        format_sql: true
+        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+logging:
+  level:
+    org.hibernate.type: trace
+    org.springframework.cloud: debug
+server:
+  port: 8084
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:9090/realms/master/protocol/openid-connect/certs'
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: 'my-kafka:9092'
+        streams:
+          binder:
+            configuration:
+              default:
+                key:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                value:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      bindings:
+        event-in:
+          group: sales
+          destination: wizmokeycloak
+          contentType: application/json
+        event-out:
+          destination: wizmokeycloak
+          contentType: application/json
+  jpa:
+    generate-ddl: true
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        ddl-auto: create-drop
+        show_sql: true
+        format_sql: true
+        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
